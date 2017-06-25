@@ -48,13 +48,16 @@ class MySpider(scrapy.Spider):
     def get_chapterurl(self, response):
         item = DingdianExampleItem()
         item['name'] = str(response.meta['name']).replace('\xa0', '')
-        item['novelurl'] = response.meta['novelurl']
+        item['novelurl'] = response.meta['url']
+
         category = BeautifulSoup(response.text, 'lxml').find('table').find('a').get_text()
         author = BeautifulSoup(response.text, 'lxml').find('table').find_all('td')[1].get_text()
         bash_url = BeautifulSoup(response.text, 'lxml').find('p', class_='btnlinks').find('a', class_='read')['href']
+
         item['category'] = category
-        item['authon'] = author
-        item['bash_url'] = bash_url
+        item['author'] = author
+        item['novelurl'] = bash_url
+        item['name_id'] = str(bash_url).strip().split('/')[-2]
 
         return item
 
